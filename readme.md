@@ -30,7 +30,7 @@ make start # docker-compose up -d
 
 - #### `/metrics` - [Prometheus](https://github.com/prometheus/client_golang) metrics
 - #### `/debug/pprof/` - [pprof](https://pkg.go.dev/runtime/pprof)
-
+- #### `/healthz` - healthcheck
 All traces are available in Jaeger at `http://127.0.0.0:16686`
 
 --- 
