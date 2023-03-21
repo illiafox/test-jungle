@@ -1,13 +1,15 @@
 # Initial stage: download modules
-FROM golang:1.20.4 as modules
+FROM golang:1.20 as modules
 
-ADD app/go.mod app/go.sum /m/
+WORKDIR /app
+ADD app/go.mod go.mod
+ADD app/go.sum go.sum
 
 RUN --mount=type=cache,target=/go/pkg \
-    cd /m && go mod download \
+     cd /app && go mod download
 
 # Intermediate stage: Build the binary
-FROM golang:1.20.4 as builder
+FROM golang:1.20 as builder
 COPY --from=modules /go/pkg /go/pkg
 
 RUN mkdir -p /app

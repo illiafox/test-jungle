@@ -2,12 +2,13 @@ package api
 
 import (
 	"fmt"
+
 	"github.com/gofiber/fiber/v2"
-	dto "jungle-test/app/internal/controller/http/api/dto"
-	"jungle-test/app/internal/controller/http/api/jwt"
-	"jungle-test/app/internal/controller/http/api/middleware"
-	"jungle-test/app/internal/domain/services"
-	"jungle-test/app/pkg/apperrors"
+	dto "jungle-test/internal/controller/http/api/dto"
+	"jungle-test/internal/controller/http/api/jwt"
+	"jungle-test/internal/controller/http/api/middleware"
+	"jungle-test/internal/domain/services"
+	"jungle-test/pkg/apperrors"
 )
 
 type UserHandler struct {
@@ -21,7 +22,6 @@ func NewUserHandler(userService *services.UserService, imageService *services.Im
 }
 
 func (h UserHandler) Login(c *fiber.Ctx) error {
-
 	var req dto.LoginUserRequest
 	if err := c.BodyParser(&req); err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, "No image uploaded")

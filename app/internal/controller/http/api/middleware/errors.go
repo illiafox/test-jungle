@@ -2,11 +2,12 @@ package middleware
 
 import (
 	"errors"
+
 	"github.com/gofiber/fiber/v2"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
-	"jungle-test/app/pkg/apperrors"
-	"jungle-test/app/pkg/logger"
+	"jungle-test/pkg/apperrors"
+	"jungle-test/pkg/logger"
 )
 
 func InternalErrorMiddleware() fiber.Handler {

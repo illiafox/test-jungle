@@ -2,15 +2,16 @@ package storages
 
 import (
 	"context"
+
+	sq "github.com/Masterminds/squirrel"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"jungle-test/app/internal/domain/entity"
-	"jungle-test/app/internal/domain/services"
-	"jungle-test/app/pkg/apperrors"
+	"jungle-test/internal/domain/entity"
+	"jungle-test/internal/domain/services"
+	"jungle-test/pkg/apperrors"
+	"jungle-test/pkg/trace"
 )
-
-import sq "github.com/Masterminds/squirrel"
 
 var psql = sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 
@@ -39,7 +40,7 @@ func (s UserStorage) GetUserByUsername(ctx context.Context, username string) (*e
 		Username: username,
 	}
 
-	err = s.client.QueryRow(ctx, sql, args).Scan(&user.ID, &user.PasswordHash, &user.Created)
+	err = s.client.QueryRow(ctx, sql, args...).Scan(&user.ID, &user.PasswordHash, &user.Created)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil, apperrors.ErrNotFound
@@ -63,6 +64,9 @@ func NewImageListStorage(client *pgxpool.Pool) *ImageListStorage {
 }
 
 func (s ImageListStorage) AddImage(ctx context.Context, userID uuid.UUID, image entity.Image) error {
+	ctx, span := trace.Get().Start(ctx, "AddImage")
+	defer span.End()
+
 	sql, args, err := psql.
 		Insert(imageListTableName).
 		Columns("user_id", "name", "content_type", "size", "url", "created_at").
@@ -90,7 +94,7 @@ func (s ImageListStorage) GetImages(ctx context.Context, userID uuid.UUID) (imag
 		return nil, apperrors.NewInternal("create squirrel query", err)
 	}
 
-	rows, err := s.client.Query(ctx, sql, args)
+	rows, err := s.client.Query(ctx, sql, args...)
 	defer rows.Close()
 
 	var image entity.Image

@@ -1,8 +1,9 @@
 package dto
 
 import (
-	"jungle-test/app/internal/domain/entity"
 	"time"
+
+	"jungle-test/internal/domain/entity"
 )
 
 type UploadPhotoResponse struct {
@@ -26,5 +27,5 @@ func EntityImagesToDTO(images []entity.Image) []Image {
 }
 
 type GetImagesResponse struct {
-	Images []Image
+	Images []Image `json:"images"`
 }

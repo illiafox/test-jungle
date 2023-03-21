@@ -1,9 +1,10 @@
 package middleware
 
 import (
-	"github.com/gofiber/fiber/v2"
-	jwt2 "jungle-test/app/internal/controller/http/api/jwt"
 	"strings"
+
+	"github.com/gofiber/fiber/v2"
+	jwt2 "jungle-test/internal/controller/http/api/jwt"
 )
 
 type JwtMiddleware struct {

@@ -3,12 +3,12 @@ package jwt
 import (
 	"crypto/rsa"
 	"fmt"
-	"jungle-test/app/internal/domain/entity"
-	"jungle-test/app/pkg/apperrors"
 	"os"
 	"time"
 
 	"github.com/kataras/jwt"
+	"jungle-test/internal/domain/entity"
+	"jungle-test/pkg/apperrors"
 )
 
 type JwtConfigurator struct {
@@ -43,7 +43,6 @@ func (jc *JwtConfigurator) GenerateAccessToken(user *entity.User) (string, error
 	now := time.Now()
 
 	accessToken, err := jwt.Sign(jc.signingMethod, jc.signer, AccessToken{
-
 		Claims: jwt.Claims{
 			Expiry:   now.Add(jc.accessTokenDur).Unix(),
 			IssuedAt: now.Unix(),

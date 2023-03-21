@@ -3,11 +3,12 @@ package services
 import (
 	"context"
 	"fmt"
-	"github.com/google/uuid"
 	"io"
-	"jungle-test/app/internal/domain/entity"
 	"net/url"
 	"time"
+
+	"github.com/google/uuid"
+	"jungle-test/internal/domain/entity"
 )
 
 type UploadStorage interface {
@@ -41,7 +42,6 @@ func (s ImageService) UploadPhoto(
 	size int64,
 	reader io.Reader,
 ) (url *url.URL, err error) {
-
 	image := entity.Image{
 		Name:        name,
 		ContentType: contentType,
@@ -54,6 +54,8 @@ func (s ImageService) UploadPhoto(
 	if err != nil {
 		return nil, fmt.Errorf("upload photo: %w", err)
 	}
+
+	image.URL = url.String()
 
 	err = s.imageListStorage.AddImage(ctx, userID, image)
 	if err != nil {

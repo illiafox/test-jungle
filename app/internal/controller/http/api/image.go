@@ -3,11 +3,12 @@ package api
 import (
 	"errors"
 	"fmt"
+
 	"github.com/gofiber/fiber/v2"
-	"jungle-test/app/internal/controller/http/api/dto"
-	"jungle-test/app/internal/controller/http/api/middleware"
-	"jungle-test/app/internal/domain/services"
-	"jungle-test/app/pkg/apperrors"
+	"jungle-test/internal/controller/http/api/dto"
+	"jungle-test/internal/controller/http/api/middleware"
+	"jungle-test/internal/domain/services"
+	"jungle-test/pkg/apperrors"
 )
 
 type ImageHandler struct {

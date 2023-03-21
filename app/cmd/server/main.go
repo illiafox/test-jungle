@@ -1,18 +1,22 @@
 package main
 
 import (
-	"jungle-test/app/internal/app"
-	"jungle-test/app/pkg/logger"
 	"log"
+
+	"jungle-test/internal/app"
+	"jungle-test/pkg/logger"
 )
 
 func main() {
-
 	a, err := app.New()
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer a.CloseDeps()
+	defer func() {
+		logger.Get().Info("shutting down server")
+		a.CloseDeps()
+		logger.Get().Info("done. exiting")
+	}()
 
 	if err = a.ReadConfig(); err != nil {
 		logger.Get().Error(err, "read config")

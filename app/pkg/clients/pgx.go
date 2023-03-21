@@ -2,12 +2,12 @@ package clients
 
 import (
 	"context"
+
 	"github.com/exaring/otelpgx"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 func NewPostgresClient(connStr string) (*pgxpool.Pool, error) {
-
 	cfg, err := pgxpool.ParseConfig(connStr)
 	if err != nil {
 		return nil, err

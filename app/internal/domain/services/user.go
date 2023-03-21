@@ -3,9 +3,10 @@ package services
 import (
 	"context"
 	"fmt"
+
 	"golang.org/x/crypto/bcrypt"
-	"jungle-test/app/internal/domain/entity"
-	"jungle-test/app/pkg/apperrors"
+	"jungle-test/internal/domain/entity"
+	"jungle-test/pkg/apperrors"
 )
 
 type UserStorage interface {
@@ -21,7 +22,6 @@ func NewUserService(userStorage UserStorage) *UserService {
 }
 
 func (s UserService) Login(ctx context.Context, username string, password string) (*entity.User, error) {
-
 	user, err := s.userStorage.GetUserByUsername(ctx, username)
 	if err != nil {
 		return nil, fmt.Errorf("get user: %w", err)

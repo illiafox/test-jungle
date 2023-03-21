@@ -3,11 +3,12 @@ package monitoring
 import (
 	"context"
 	"fmt"
+	"net/http"
+	"time"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/minio/minio-go/v7"
-	"net/http"
-	"time"
 )
 
 type HealthCheckHandler struct {

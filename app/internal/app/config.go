@@ -1,8 +1,9 @@
 package app
 
 import (
-	"github.com/ilyakaznacheev/cleanenv"
 	"time"
+
+	"github.com/ilyakaznacheev/cleanenv"
 )
 
 type Postgres struct {
@@ -15,19 +16,20 @@ type Telemetry struct {
 }
 
 type Minio struct {
-	Endpoint       string `env:"MINIO_ENDPOINT"          env-required:""`
-	SSL            bool   `env:"MINIO_SSL_MODE"          env-required:""`
-	BucketName     string `env:"MINIO_BUCKET_NAME" env-required:""`
+	Endpoint       string `env:"MINIO_ENDPOINT"        env-required:""`
+	SSL            bool   `env:"MINIO_SSL_MODE"        env-required:""`
+	PublicHost     string `env:"MINIO_PUBLIC_HOST"     env-required:""`
+	BucketName     string `env:"MINIO_BUCKET_NAME"     env-required:""`
 	BucketLocation string `env:"MINIO_BUCKET_LOCATION" env-required:""`
 }
 
 type Jwt struct {
-	PrivateKeyPath      string        `env:"JWT_PUBLIC_KEY_PATH"          env-required:""`
+	PrivateKeyPath      string        `env:"JWT_PRIVATE_KEY_PATH"      env-required:""`
 	AccessTokenDuration time.Duration `env:"JWT_ACCESS_TOKEN_DURATION" env-required:""`
 }
 
 type Server struct {
-	MainPort    int `env:"HTTP_PORT" env-default:"8080"`
+	MainPort    int `env:"HTTP_PORT"         env-default:"8080"`
 	MetricsPort int `env:"HTTP_METRICS_PORT" env-default:"8082"`
 }
 

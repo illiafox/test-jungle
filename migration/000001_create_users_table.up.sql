@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS users
 (
     user_id       UUID  PRIMARY KEY DEFAULT uuid_generate_v4(),
     username      TEXT UNIQUE NOT NULL,
-    password_hash BYTEA       NOT NULL,
+    password_hash TEXT       NOT NULL,
     created_at    TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 
 );

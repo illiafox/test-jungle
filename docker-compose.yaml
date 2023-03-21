@@ -20,11 +20,26 @@ services:
       MINIO_ROOT_PASSWORD: minio_pass
     command: server --console-address ":9001" /data
 
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias set myminio http://minio:9000 minio_user minio_pass;
+      /usr/bin/mc mb myminio/images;
+      /usr/bin/mc policy set public myminio/images;
+      /usr/bin/mc policy set download myminio/images;
+      /usr/bin/mc anonymous set public myminio/images;
+
+      exit 0;
+      "
+
   pg:
     image: postgres:15.2
     environment:
-      POSTGRES_USER: pg_user
-      POSTGRES_PASSWORD: pg_pass
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: dev_pass
       POSTGRES_DB: jungle-test
     restart: on-failure
     volumes:
@@ -52,10 +67,10 @@ services:
       - ./migration:/migrations
 
     command:
-      [ "-database",  "postgres://pg_user:pg_pass@pg:5432/jungle-test?sslmode=disable" , "-path", "/migrations", "up" ]
+      [ "-database",  "postgres://postgres:dev_pass@pg:5432/jungle-test?sslmode=disable" , "-path", "/migrations", "up" ]
 
   app:
-    build: app
+    build: .
     depends_on:
       migrate:
           condition: service_completed_successfully
@@ -63,6 +78,8 @@ services:
         condition: service_started
       minio:
         condition: service_started
+    volumes:
+      - ./keys:/keys
     ports:
       - "8080:8080"
       - "8082:8082"

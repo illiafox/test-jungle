@@ -3,12 +3,14 @@ package app
 import (
 	"context"
 	"fmt"
-	"github.com/go-logr/zapr"
-	"go.uber.org/zap"
-	"jungle-test/app/pkg/logger"
-	"jungle-test/app/pkg/trace"
 	"os"
 	"os/signal"
+	"syscall"
+
+	"github.com/go-logr/zapr"
+	"go.uber.org/zap"
+	"jungle-test/pkg/logger"
+	"jungle-test/pkg/trace"
 )
 
 type App struct {
@@ -57,13 +59,15 @@ func (app *App) InitTracer() error {
 }
 
 func (app *App) Start() {
-	ctx, stop := signal.NotifyContext(context.Background(), os.Kill, os.Interrupt)
+	ctx, stop := signal.NotifyContext(context.Background(), os.Kill, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
 	defer stop()
 
 	go func() {
 		defer stop()
 
-		err := app.deps.mainServer.Listen(fmt.Sprintf(":%d", app.cfg.Server.MainPort))
+		addr := fmt.Sprintf(":%d", app.cfg.Server.MainPort)
+		logger.Get().Info("api server started on", "addr", addr)
+		err := app.deps.mainServer.Listen(addr)
 		if err != nil {
 			logger.Get().Error(err, "mainServer.Listen")
 		}
@@ -72,7 +76,9 @@ func (app *App) Start() {
 	go func() {
 		defer stop()
 
-		err := app.deps.metricsServer.Listen(fmt.Sprintf(":%d", app.cfg.Server.MetricsPort))
+		addr := fmt.Sprintf(":%d", app.cfg.Server.MetricsPort)
+		logger.Get().Info("metrics server started on", "addr", addr)
+		err := app.deps.metricsServer.Listen(addr)
 		if err != nil {
 			logger.Get().Error(err, "metricsServer.Listen")
 		}
