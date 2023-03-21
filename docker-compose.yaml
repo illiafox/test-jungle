@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+
+  jaeger:
+    image: jaegertracing/all-in-one
+    ports:
+      - "14268:14268"
+      - "16686:16686"
+
+  minio:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_storage:/data
+    environment:
+      MINIO_ROOT_USER: minio_user
+      MINIO_ROOT_PASSWORD: minio_pass
+    command: server --console-address ":9001" /data
+
+  pg:
+    image: postgres:15.2
+    environment:
+      POSTGRES_USER: pg_user
+      POSTGRES_PASSWORD: pg_pass
+      POSTGRES_DB: jungle-test
+    restart: on-failure
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+    ports:
+      - "5432:5432"
+
+    healthcheck:
+      test: pg_isready -U postgres -d jungle-test
+      interval: 1s
+      timeout: 3s
+      retries: 15
+
+  migrate:
+    image: migrate/migrate
+
+    restart: on-failure
+
+    depends_on:
+      pg:
+        condition: service_healthy
+
+    volumes:
+      - ./migration:/migrations
+
+    command:
+      [ "-database",  "postgres://pg_user:pg_pass@pg:5432/jungle-test?sslmode=disable" , "-path", "/migrations", "up" ]
+
+  app:
+    build: app
+    depends_on:
+      migrate:
+          condition: service_completed_successfully
+      jaeger:
+        condition: service_started
+      minio:
+        condition: service_started
+    ports:
+      - "8080:8080"
+      - "8082:8082"
+    env_file:
+      - .env
+volumes:
+  pg_data:
+  minio_storage:
