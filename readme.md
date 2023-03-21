@@ -7,6 +7,8 @@
 Service starts after containers are up
 
 ```shell
+git clone https://github.com/illiafox/test-jungle
+cd test-jungle
 make start # docker-compose up -d
 ```
 
